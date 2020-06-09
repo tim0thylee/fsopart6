@@ -22,4 +22,18 @@ export const removeNotification = () => {
     }
 }
 
+export const setNotification = (notification, time) => {
+    return async dispatch => {
+        dispatch({
+            type: 'SHOW_NOTIFICATION',
+            notification
+        })
+        setTimeout(() => {
+            dispatch({
+                type: 'REMOVE_NOTIFICATION'
+            })
+        }, time * 1000)
+    }
+}
+
 export default reducer
