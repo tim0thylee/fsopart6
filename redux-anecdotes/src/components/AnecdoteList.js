@@ -1,25 +1,24 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch, connect } from 'react-redux'
 import { updateVote } from '../reducers/anecdoteReducer'
-import { updateNotification, removeNotification, setNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state.anecdotes)
-    const filteredWord = useSelector(state => state.filtered)
-    const dispatch = useDispatch()
+const AnecdoteList = props => {
+    // const anecdotes = useSelector(state => state.anecdotes)
+    // const filteredWord = useSelector(state => state.filtered)
+    // const dispatch = useDispatch()
   
     const vote = (id) => {
-      const anecdote = anecdotes.find(anecdote => anecdote.id === id)
-      console.log('hit')
-      dispatch(updateVote(id, anecdote))
-      dispatch(setNotification(anecdote.content, 3))
+      const anecdote = props.anecdotes.find(anecdote => anecdote.id === id)
+      props.updateVote(id, anecdote)
+      props.setNotification(anecdote.content, 3)
     }
 
     return (
         <>
-            {anecdotes
+            {props.anecdotes
                 .sort((a, b) => b.votes - a.votes)
-                .filter(anecdote => anecdote.content.toLowerCase().includes(filteredWord.toLowerCase()))
+                .filter(anecdote => anecdote.content.toLowerCase().includes(props.filteredWord.toLowerCase()))
                 .map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
@@ -35,4 +34,27 @@ const AnecdoteList = () => {
     )
 }
 
-export default AnecdoteList
+const mapDispatchToProps = dispatch => {
+    return {
+        updateVote: (id, content) => {
+            dispatch(updateVote(id, content))
+        },
+        setNotification: (content, time) => {
+            dispatch(setNotification(content, time))
+        }
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        anecdotes: state.anecdotes,
+        filteredWord: state.filtered
+    }
+}
+
+const connectedAnecdotes = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AnecdoteList)
+
+export default connectedAnecdotes

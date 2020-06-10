@@ -1,3 +1,5 @@
+let timeOut;
+
 const reducer = (state = 'What you vote for will show here.', action) => {
     switch(action.type) {
         case 'SHOW_NOTIFICATION':
@@ -24,11 +26,12 @@ export const removeNotification = () => {
 
 export const setNotification = (notification, time) => {
     return async dispatch => {
+        clearTimeout(timeOut)
         dispatch({
             type: 'SHOW_NOTIFICATION',
             notification
         })
-        setTimeout(() => {
+        timeOut = setTimeout(() => {
             dispatch({
                 type: 'REMOVE_NOTIFICATION'
             })
